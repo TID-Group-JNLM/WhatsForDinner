@@ -1,7 +1,9 @@
 # Hi team
 
 I have created the basic setup for our webapp.
-Right now it is a cleaned up React app (made with Vite, plain JavaScript) and I have connected it to Back4App.
+Right now it is a cleaned up React app (made with Vite, plain JavaScript) and I have connected it to Back4App and set it up with github pages.
+You can find the webpage right here:
+https://tid-group-jnlm.github.io/WhatsForDinner/
 
 I also added a favicon :-))
 

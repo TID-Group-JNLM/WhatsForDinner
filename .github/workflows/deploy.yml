@@ -1,0 +1,32 @@
+#This file is for github actions
+#What it does:
+#on a push to main, start a clean machine, get the code, install Node and the dependencies, build, and hand the result to Pages.
+name: Deploy to GitHub Pages
+
+#Pipeline runs on every push to main
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./dist
+      - uses: actions/deploy-pages@v5

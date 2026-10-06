@@ -29,4 +29,4 @@ We share one Back4App app. The connection is set up in `src/main.jsx`, so you do
 
 Send me the email you use for Back4App and i will add you so you can see the database in the dashboard.
 
-Important: never put the Master key in the code or in this repo!
+Important: never put the Master key in the code or in this repo! :-)))

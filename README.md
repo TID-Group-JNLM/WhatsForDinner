@@ -1,16 +1,32 @@
-# React + Vite
+# Hi team
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+I have created the basic setup for our webapp.
+Right now it is a cleaned up React app (made with Vite, plain JavaScript) and I have connected it to Back4App.
 
-Currently, two official plugins are available:
+I also added a favicon :-))
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Get it running
 
-## React Compiler
+You need Node 20, 22 or 24. Check with `node --version`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+git clone https://github.com/TID-Group-JNLM/WhatsForDinner.git
+cd WhatsForDinner
+npm install
+npm run dev
+```
 
-## Expanding the ESLint configuration
+Then open the link it prints (normally http://localhost:5173/).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Before your first commit
+
+Check that `git config user.email` shows an email your GitHub account knows. And only ONE email
+Otherwise your commits are not linked to you.
+
+## Back4App
+
+We share one Back4App app. The connection is set up in `src/main.jsx`, so you don't have to do anything to use it.
+
+Send me the email you use for Back4App and i will add you so you can see the database in the dashboard.
+
+Important: never put the Master key in the code or in this repo!

@@ -13,7 +13,8 @@
     "events": "^3.3.0",
     "parse": "^8.6.2",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-router": "^8.5.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

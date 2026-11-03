@@ -9,7 +9,6 @@ function toDish(parseObject) {
 }
 
 export async function fetchDishes(familyId){
-    throw new Error("test");
     const familyPointer = Parse.Object.extend(FAMILY_CLASS).createWithoutData(familyId);
     const query = new Parse.Query(DISH_CLASS)
         .equalTo(COLUMN.family, familyPointer)

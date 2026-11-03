@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { fetchDishes } from "../services/dishService"; 
 import { useState } from "react";
+import DishCard from "../components/DishCard";
 
 export default function DishPage() {
 const [loading, setLoading] = useState(true);
@@ -21,13 +22,15 @@ if (loading){
     content = <p>Loading...</p>
 } else if (error){
 content = <p>{error}</p>
+} else if(dishes.length === 0){
+    content = <p>There are no dishes.</p>
 } else{
  content = <div>
-        <ul>
+        <div>
           {dishes.map((dish) => (
-            <li key={dish.dishID}>{dish.dishName}</li>
+           < DishCard key={dish.dishID} dish = {dish}/>
           ))}
-        </ul>
+        </div>
     </div>
 }
 

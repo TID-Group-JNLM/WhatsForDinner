@@ -1,11 +1,15 @@
 import Parse from "./parse.js";
 
 const FAMILY_CLASS = "Family"; // renaming to make it clear that Family is a class/table in back4app
-const  DISH_CLASS = "Dish"; // as above
-const COLUMN = {dishName : "dishName", family : "family"}; // the columns of  DISH_CLASS
+const DISH_CLASS = "Dish"; // as above
+const COLUMN = {dishName : "dishName", family : "family", image : "image"}; // the columns of  DISH_CLASS
 
 function toDish(parseObject) {
-    return {dishID: parseObject.id, dishName: parseObject.get(COLUMN.dishName)} // add imageURL later
+    const file = parseObject.get(COLUMN.image);
+    return {
+        id: parseObject.id, 
+        name: parseObject.get(COLUMN.dishName),
+        imageUrl: file ? file.url() : null};
 }
 
 export async function fetchDishes(familyId){

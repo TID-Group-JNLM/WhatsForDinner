@@ -17,7 +17,8 @@ export default function DishList({ familyId }) {
   }, [familyId]);
 
   if (status === "loading") return <p>Loading dishes...</p>;
-  if (status === "failed") return <p>Could not load dishes. Try re-loading the page.</p>;
+  if (status === "failed")
+    return <p>Could not load dishes. Try reloading the page.</p>;
   if (dishes.length === 0) return <p>There are no dishes.</p>;
 
   return (

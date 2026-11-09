@@ -1,10 +1,13 @@
+//TODO: Add dish to meal plan when loadDishes is ready
 import { useState, useEffect } from "react";
 import {
   loadMealPlan,
   removeDishFromMealPlan,
-} from "../services/mealPlanService";
+} from "../services/mealPlanService.js";
+import MealPlanDay from "../components/MealPlanDay.jsx";
+import WeekNavigation from "../components/WeekNavigation.jsx";
 
-//TODO: Add dish to meal plan when loadDishes is ready
+//Helper functions:
 function getMonday(date) {
   const daysBack = (date.getDay() + 6) % 7;
   return addDays(date, -daysBack);
@@ -13,7 +16,7 @@ function getMonday(date) {
 function getWeekDays(weekStart) {
   const days = [];
   for (let i = 0; i < 7; i++) {
-    days.push(new Date(addDays(weekStart, i)));
+    days.push(addDays(weekStart, i));
   }
   return days;
 }
@@ -22,6 +25,7 @@ function addDays(date, days) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
 }
 
+//MealPlanPage:
 export default function MealPlanPage() {
   const [weekStart, setWeekStart] = useState(getMonday(new Date()));
   const [mealPlan, setMealPlan] = useState([]);
@@ -29,6 +33,7 @@ export default function MealPlanPage() {
 
   useEffect(() => {
     async function load() {
+      setStatus("loading");
       try {
         setMealPlan(await loadMealPlan(weekStart));
         setStatus("ready");
@@ -60,42 +65,29 @@ export default function MealPlanPage() {
   if (status === "loading") return <p>Loading your meal plan...</p>;
   if (status === "failed") return <p>Could not reach the server. Try again</p>;
 
+  //Calls helper function and receives an array with the days of the week:
   const days = getWeekDays(weekStart);
 
   return (
     <>
       <h1>Meal plan</h1>
-      <button onClick={showPreviousWeek}>Previous week</button>
-      <p>
-        {days[0].toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        })}
-      </p>
-      <button onClick={showNextWeek}>Next week</button>
+      <WeekNavigation
+        weekStart={days[0]}
+        weekEnd={days[6]}
+        onPrevious={showPreviousWeek}
+        onNext={showNextWeek}
+      />
       {days.map((day) => {
         const dayEntries = mealPlan.filter(
           (entry) => entry.date.toDateString() === day.toDateString(),
         );
         return (
-          <section key={day.getTime()}>
-            <h2>{day.toLocaleDateString("en-GB", { weekday: "long" })}</h2>
-            {dayEntries.length === 0 ? (
-              <p>Nothing planned</p>
-            ) : (
-              <ul>
-                {dayEntries.map((entry) => (
-                  <li key={entry.id}>
-                    {entry.dishName}
-                    <button onClick={() => handleRemove(entry.id)}>
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
+          <MealPlanDay
+            key={day.getTime()}
+            day={day}
+            entries={dayEntries}
+            onRemove={handleRemove}
+          />
         );
       })}
     </>

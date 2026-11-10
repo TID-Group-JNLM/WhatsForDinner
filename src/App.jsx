@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route } from "react-router";
 import LoginPage from "./pages/LoginPage.jsx";
+import SignUpPage from "./pages/SignUpPage.jsx";
 import FamilyRegistrationPage from "./pages/FamilyRegistrationPage.jsx";
 import FamilyManagementPage from "./pages/FamilyManagementPage.jsx";
 import DishPage from "./pages/DishPage.jsx";
@@ -15,6 +16,7 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route
           path="/family-registration"
           element={<FamilyRegistrationPage />}

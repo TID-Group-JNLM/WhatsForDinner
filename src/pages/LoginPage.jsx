@@ -20,7 +20,7 @@ export default function LoginPage() {
     }
   }
 
-  if (user && user.hasFamily) return <Navigate to="/dishes" />;
+  if (user && user.hasFamily) return <Navigate to="/mealplan" />;
   if (user) return <Navigate to="/family-registration" />;
 
   return (

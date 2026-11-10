@@ -15,7 +15,7 @@ export default function FamilyRegistrationPage() {
     setHasJoined(true);
   }
 
-  if (hasJoined) return <Navigate to="/dishes" />;
+  if (hasJoined) return <Navigate to="/mealplan" />;
 
   // the parent must see the invite code before moving on, so we don't navigate right away
   if (createdFamily) {
@@ -27,7 +27,7 @@ export default function FamilyRegistrationPage() {
           Give it to your children so they can join the family. You can always
           find it again on the family management page.
         </p>
-        <Link to="/dishes">Continue</Link>
+        <Link to="/mealplan">Continue</Link>
       </>
     );
   }

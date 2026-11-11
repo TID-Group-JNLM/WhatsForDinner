@@ -1,13 +1,22 @@
 import Parse from "./parse.js";
 
-//turns the Parse user into a plain object with id, username and hasFamily so we avoid using .get on the pages and components
+//turns the Parse user into a plain object with id, username, familyId and hasFamily so we avoid using .get on the pages and components
 //This way we keep parse related code in the services
 function toUser(user) {
+  const family = user.get("family");
   return {
     id: user.id,
     username: user.get("username"),
-    hasFamily: user.get("family") !== undefined,
+    familyId: family ? family.id : null,
+    hasFamily: Boolean(family),
   };
+}
+
+//returns the logged in user, or null if nobody is logged in.
+//Parse remembers the login in the browser, so this also works after a page reload.
+export function getCurrentUser() {
+  const user = Parse.User.current();
+  return user ? toUser(user) : null;
 }
 
 //creates new parse user and saves in back4app

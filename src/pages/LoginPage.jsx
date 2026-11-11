@@ -29,6 +29,7 @@ export default function LoginPage() {
       <TextField
         id="username"
         label="Username"
+        required
         value={username}
         onChange={setUsername}
       />
@@ -36,6 +37,7 @@ export default function LoginPage() {
         id="password"
         label="Password"
         type="password"
+        required
         value={password}
         onChange={setPassword}
       />

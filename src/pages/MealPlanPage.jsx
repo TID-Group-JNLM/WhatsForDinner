@@ -4,6 +4,7 @@ import {
   loadMealPlan,
   removeDishFromMealPlan,
 } from "../services/mealPlanService.js";
+import { getCurrentUser } from "../services/authService.js";
 import MealPlanDay from "../components/MealPlanDay.jsx";
 import WeekNavigation from "../components/WeekNavigation.jsx";
 
@@ -27,6 +28,8 @@ function addDays(date, days) {
 
 //MealPlanPage:
 export default function MealPlanPage() {
+  //RequireLogin in App.jsx makes sure there is a user with a family here
+  const { familyId } = getCurrentUser();
   const [weekStart, setWeekStart] = useState(getMonday(new Date()));
   const [mealPlan, setMealPlan] = useState([]);
   const [status, setStatus] = useState("loading");
@@ -35,7 +38,7 @@ export default function MealPlanPage() {
     async function load() {
       setStatus("loading");
       try {
-        setMealPlan(await loadMealPlan(weekStart));
+        setMealPlan(await loadMealPlan(weekStart, familyId));
         setStatus("ready");
       } catch (error) {
         console.error(error);
@@ -43,7 +46,7 @@ export default function MealPlanPage() {
       }
     }
     load();
-  }, [weekStart]);
+  }, [weekStart, familyId]);
 
   async function handleRemove(entryId) {
     try {

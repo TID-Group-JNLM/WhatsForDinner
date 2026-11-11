@@ -1,9 +1,10 @@
 import DishList from "../components/DishList";
-
-// Hard-coded until login gives us the user's family
-const familyId = "4HG5l3e73W";
+import { getCurrentUser } from "../services/authService.js";
 
 export default function DishPage() {
+  //RequireLogin in App.jsx makes sure there is a user with a family here
+  const { familyId } = getCurrentUser();
+
   return (
     <>
       <h1>Dishes</h1>

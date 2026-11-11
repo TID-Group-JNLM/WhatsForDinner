@@ -12,9 +12,11 @@ function toMealPlanEntry(item) {
   return {
     id: item.id,
     date: item.get("date"),
-    dishId: dish.id,
-    dishName: dish.get("dishName"),
-    dishImageUrl: image ? image.url() : null,
+    dish: {
+      id: dish.id,
+      name: dish.get("dishName"),
+      imageUrl: image ? image.url() : null,
+    },
   };
 }
 

@@ -3,6 +3,7 @@ import Parse from "./parse.js";
 //Tells which class to retrieve from parse:
 const MealPlanEntry = Parse.Object.extend("MealPlanEntry");
 const Dish = Parse.Object.extend("Dish");
+const Family = Parse.Object.extend("Family");
 
 //The converter turns Parse object into JavaScript object
 function toMealPlanEntry(item) {
@@ -17,9 +18,9 @@ function toMealPlanEntry(item) {
   };
 }
 
-//Loads dishes for one week
+//Loads one family's dishes for one week
 //Note to remember: Months in JavaScript count from 0 so example new Date(2026, 10, 9) 10 is novemeber not october
-export async function loadMealPlan(weekStart) {
+export async function loadMealPlan(weekStart, familyId) {
   const weekStartDay = new Date(
     weekStart.getFullYear(),
     weekStart.getMonth(),
@@ -31,8 +32,8 @@ export async function loadMealPlan(weekStart) {
     weekStart.getDate() + 7,
   );
 
-  // TODO: filter on the user's family when login works
   const results = await new Parse.Query(MealPlanEntry)
+    .equalTo("family", Family.createWithoutData(familyId))
     .greaterThanOrEqualTo("date", weekStartDay)
     .lessThan("date", weekEnd)
     .include("dish")

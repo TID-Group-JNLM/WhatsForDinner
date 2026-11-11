@@ -1,14 +1,14 @@
-//TODO: Add dish to meal plan when loadDishes is ready
 import { useState, useEffect } from "react";
 import {
   loadMealPlan,
   removeDishFromMealPlan,
+  addDishToMealPlan,
 } from "../services/mealPlanService.js";
 import { getCurrentUser } from "../services/authService.js";
+import { fetchDishes } from "../services/dishService.js";
 import MealPlanDay from "../components/MealPlanDay.jsx";
 import WeekNavigation from "../components/WeekNavigation.jsx";
 
-//Helper functions:
 function getMonday(date) {
   const daysBack = (date.getDay() + 6) % 7;
   return addDays(date, -daysBack);
@@ -26,13 +26,13 @@ function addDays(date, days) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
 }
 
-//MealPlanPage:
 export default function MealPlanPage() {
   //RequireLogin in App.jsx makes sure there is a user with a family here
   const { familyId } = getCurrentUser();
   const [weekStart, setWeekStart] = useState(getMonday(new Date()));
   const [mealPlan, setMealPlan] = useState([]);
   const [status, setStatus] = useState("loading");
+  const [dishes, setDishes] = useState([]);
 
   useEffect(() => {
     async function load() {
@@ -47,6 +47,26 @@ export default function MealPlanPage() {
     }
     load();
   }, [weekStart, familyId]);
+
+  useEffect(() => {
+    async function loadDishes() {
+      try {
+        setDishes(await fetchDishes(familyId));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    loadDishes();
+  }, [familyId]);
+
+  async function handleAdd(dishId, day) {
+    try {
+      const newEntry = await addDishToMealPlan(dishId, day);
+      setMealPlan([...mealPlan, newEntry]);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
 
   async function handleRemove(entryId) {
     try {
@@ -68,7 +88,6 @@ export default function MealPlanPage() {
   if (status === "loading") return <p>Loading your meal plan...</p>;
   if (status === "failed") return <p>Could not reach the server. Try again</p>;
 
-  //Calls helper function and receives an array with the days of the week:
   const days = getWeekDays(weekStart);
 
   return (
@@ -89,6 +108,8 @@ export default function MealPlanPage() {
             key={day.getTime()}
             day={day}
             entries={dayEntries}
+            dishes={dishes}
+            onAdd={handleAdd}
             onRemove={handleRemove}
           />
         );

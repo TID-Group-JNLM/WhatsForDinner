@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { fetchDishes } from "../services/dishService";
 import DishCard from "./DishCard";
+import { fetchDishes } from "../services/dishService";
 
 export default function DishList({ familyId }) {
   const [dishes, setDishes] = useState([]);
@@ -17,8 +17,7 @@ export default function DishList({ familyId }) {
   }, [familyId]);
 
   if (status === "loading") return <p>Loading dishes...</p>;
-  if (status === "failed")
-    return <p>Could not load dishes. Try reloading the page.</p>;
+  if (status === "failed") return <p>Could not load dishes.</p>;
   if (dishes.length === 0) return <p>There are no dishes.</p>;
 
   return (

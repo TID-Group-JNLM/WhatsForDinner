@@ -6,6 +6,7 @@ import FamilyManagementPage from "./pages/FamilyManagementPage.jsx";
 import DishPage from "./pages/DishPage.jsx";
 import MealPlanPage from "./pages/MealPlanPage.jsx";
 import ShoppingListPage from "./pages/ShoppingListPage.jsx";
+import DishDetailPage from "./pages/DishDetailPage.jsx";
 import { RequireLogin, RequireLoggedOut } from "./components/LoginCheck.jsx";
 
 // To open a page directly, add its path after "#":
@@ -56,6 +57,14 @@ export default function App() {
             </RequireLogin>
           }
         />
+        <Route
+          path="/dishes/:dishId"
+          element={
+            <RequireLogin needsFamily>
+              <DishDetailPage />
+            </RequireLogin>
+  }
+/>
         <Route
           path="/mealplan"
           element={

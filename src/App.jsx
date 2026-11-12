@@ -35,7 +35,7 @@ export default function App() {
         <Route
           path="/family-registration"
           element={
-            <RequireLogin>
+            <RequireLogin needsNoFamily>
               <FamilyRegistrationPage />
             </RequireLogin>
           }

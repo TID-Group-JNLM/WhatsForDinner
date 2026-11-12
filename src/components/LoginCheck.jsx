@@ -5,11 +5,15 @@ import { getCurrentUser } from "../services/authService.js";
 
 //For pages that need a logged in user.
 //With needsFamily, the user must also be part of a family, otherwise they go to family registration.
-export function RequireLogin({ needsFamily = false, children }) {
+//With needsNoFamily, the user must not have a family yet, otherwise they go to the meal plan.
+export function RequireLogin({ needsFamily = false, needsNoFamily = false, children }) {
   const user = getCurrentUser();
   if (!user) return <Navigate to="/" replace />;
   if (needsFamily && !user.hasFamily) {
     return <Navigate to="/family-registration" replace />;
+  }
+  if (needsNoFamily && user.hasFamily) {
+    return <Navigate to="/mealplan" replace />;
   }
   return children;
 }

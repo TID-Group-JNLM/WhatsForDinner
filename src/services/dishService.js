@@ -61,3 +61,22 @@ export async function fetchIngredients() {
   const results = await query.find();
   return results.map(toIngredient);
 }
+
+export async function fetchDishIdsWithIngredient(ingredientId) {
+  const query = new Parse.Query(DishIngredient);
+  query.equalTo("ingredient", Ingredient.createWithoutData(ingredientId));
+  const results = await query.find();
+  return results.map((row) => row.get("dish").id);
+}
+
+export async function fetchDishIdsWithAllIngredients(ingredientIds) {
+  let matching = null;
+  for (const ingredientId of ingredientIds) {
+    const dishIds = await fetchDishIdsWithIngredient(ingredientId);
+    matching =
+      matching === null
+        ? dishIds
+        : matching.filter((each) => dishIds.includes(each));
+  }
+  return matching;
+}

@@ -12,6 +12,7 @@ export default function DishPage() {
   return (
     <>
       <h1>Dishes</h1>
+      <h2>Filter by ingredients</h2>
       <DishList familyId={user.familyId} />
     </>
   );

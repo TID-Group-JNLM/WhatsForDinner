@@ -7,6 +7,7 @@ import DishPage from "./pages/DishPage.jsx";
 import MealPlanPage from "./pages/MealPlanPage.jsx";
 import ShoppingListPage from "./pages/ShoppingListPage.jsx";
 import { RequireLogin, RequireLoggedOut } from "./components/LoginCheck.jsx";
+import AppLayout from "./components/AppLayout.jsx";
 
 // To open a page directly, add its path after "#":
 //   local:  http://localhost:5173/WhatsForDinner/#/dishes
@@ -40,38 +41,19 @@ export default function App() {
             </RequireLogin>
           }
         />
+        {/* Pages that need a family share AppLayout, which shows the nav bar */}
         <Route
-          path="/family-management"
           element={
             <RequireLogin needsFamily>
-              <FamilyManagementPage />
+              <AppLayout />
             </RequireLogin>
           }
-        />
-        <Route
-          path="/dishes"
-          element={
-            <RequireLogin needsFamily>
-              <DishPage />
-            </RequireLogin>
-          }
-        />
-        <Route
-          path="/mealplan"
-          element={
-            <RequireLogin needsFamily>
-              <MealPlanPage />
-            </RequireLogin>
-          }
-        />
-        <Route
-          path="/shopping"
-          element={
-            <RequireLogin needsFamily>
-              <ShoppingListPage />
-            </RequireLogin>
-          }
-        />
+        >
+          <Route path="/mealplan" element={<MealPlanPage />} />
+          <Route path="/shopping" element={<ShoppingListPage />} />
+          <Route path="/dishes" element={<DishPage />} />
+          <Route path="/family-management" element={<FamilyManagementPage />} />
+        </Route>
       </Routes>
     </HashRouter>
   );

@@ -47,7 +47,7 @@ export async function loadMealPlan(weekStart, familyId) {
 
 //Adds one dish to one day, unless that dish is already planned on that day.
 export async function addDishToMealPlan(dishId, date) {
-  //Every entry saved at the start of the day at time 00:00, so two entries on the same day can be compared:
+  // Saved at the start of the day:
   const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   const dish = await new Parse.Query(Dish).get(dishId);
   const family = dish.get("family");

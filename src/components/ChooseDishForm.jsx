@@ -1,21 +1,22 @@
 import { useState } from "react";
 
-export default function AddDishForm({ dishes, onAdd }) {
+export default function AddDishForm({ dishes, onChoose, buttonLabel }) {
   const [selectedDishId, setSelectedDishId] = useState("");
 
   function handleSubmit(e) {
-    e.preventDefault(); //so browser does not reload the page when the form is submitted
-    onAdd(selectedDishId);
+    // Stop the browser from reloading the page on submit
+    e.preventDefault();
+    onChoose(selectedDishId);
     setSelectedDishId("");
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <select
-        aria-label="Choose a dish"
         value={selectedDishId}
         onChange={(e) => setSelectedDishId(e.target.value)}
       >
+        {/* Matches the starting state "", so nothing looks chosen until the user picks a dish */}
         <option value="">Choose a dish</option>
         {dishes.map((dish) => (
           <option key={dish.id} value={dish.id}>
@@ -23,7 +24,7 @@ export default function AddDishForm({ dishes, onAdd }) {
           </option>
         ))}
       </select>
-      <button disabled={!selectedDishId}>Add</button>
+      <button disabled={!selectedDishId}>{buttonLabel}</button>
     </form>
   );
 }

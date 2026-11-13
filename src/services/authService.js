@@ -1,12 +1,13 @@
 import Parse from "./parse.js";
 
-//turns the Parse user into a plain object with id, username, familyId and hasFamily so we avoid using .get on the pages and components
+//turns the Parse user into a plain object with id, username, role, familyId and hasFamily so we avoid using .get on the pages and components
 //This way we keep parse related code in the services
 function toUser(user) {
   const family = user.get("family");
   return {
     id: user.id,
     username: user.get("username"),
+    role: user.get("role"),
     familyId: family ? family.id : null,
     hasFamily: Boolean(family),
   };

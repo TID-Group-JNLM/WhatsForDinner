@@ -14,10 +14,25 @@ export default function IngredientFilter({
           !selectedIds.includes(ingredient.id),
       )
     : [];
+  const selectedIngredients = ingredients.filter((ingredient) => selectedIds.includes(ingredient.id))
+
+  function handleSelect(ingredientId) {
+    onToggle(ingredientId);
+    setSearchText("");
+  }
 
   return (
     <div>
-      <label htmlFor="ingredient_search">Search ingredient</label>
+      <ul>
+        {selectedIngredients.map((ingredient) => (
+          <li key={ingredient.id}>
+            <button type="button" onClick={() => onToggle(ingredient.id)}>
+             X {ingredient.name}
+            </button>
+          </li>
+        ))}
+      </ul>
+      <label htmlFor="ingredient_search">Ingredient filter</label>
       <input
         type="text"
         id="ingredient_search"
@@ -27,24 +42,14 @@ export default function IngredientFilter({
       <ul>
         {suggestions.map((ingredient) => (
           <li key={ingredient.id}>
-            <button type="button">{ingredient.name}</button>
+            <button type="button" onClick={() => handleSelect(ingredient.id)}>
+              {ingredient.name}
+            </button>
           </li>
         ))}
       </ul>
 
-      {ingredients.map((ingredient) => (
-        <div key={ingredient.id}>
-          <input
-            type="checkbox"
-            id={`ingredient-${ingredient.id}`}
-            checked={selectedIds.includes(ingredient.id)}
-            onChange={() => onToggle(ingredient.id)}
-          />
-          <label htmlFor={`ingredient-${ingredient.id}`}>
-            {ingredient.name}
-          </label>
-        </div>
-      ))}
     </div>
   );
+  
 }

@@ -14,7 +14,9 @@ export default function IngredientFilter({
           !selectedIds.includes(ingredient.id),
       )
     : [];
-  const selectedIngredients = ingredients.filter((ingredient) => selectedIds.includes(ingredient.id))
+  const selectedIngredients = ingredients.filter((ingredient) =>
+    selectedIds.includes(ingredient.id),
+  );
 
   function handleSelect(ingredientId) {
     onToggle(ingredientId);
@@ -27,7 +29,7 @@ export default function IngredientFilter({
         {selectedIngredients.map((ingredient) => (
           <li key={ingredient.id}>
             <button type="button" onClick={() => onToggle(ingredient.id)}>
-             X {ingredient.name}
+              X {ingredient.name}
             </button>
           </li>
         ))}
@@ -48,8 +50,6 @@ export default function IngredientFilter({
           </li>
         ))}
       </ul>
-
     </div>
   );
-  
 }

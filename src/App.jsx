@@ -6,6 +6,7 @@ import FamilyManagementPage from "./pages/FamilyManagementPage.jsx";
 import DishPage from "./pages/DishPage.jsx";
 import MealPlanPage from "./pages/MealPlanPage.jsx";
 import ShoppingListPage from "./pages/ShoppingListPage.jsx";
+import DishDetailPage from "./pages/DishDetailPage.jsx";
 import { RequireLogin, RequireLoggedOut } from "./components/LoginCheck.jsx";
 import AppLayout from "./components/AppLayout.jsx";
 
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="/mealplan" element={<MealPlanPage />} />
           <Route path="/shopping" element={<ShoppingListPage />} />
           <Route path="/dishes" element={<DishPage />} />
+          <Route path="/dishes/:dishId" element={<DishDetailPage />} />
           <Route path="/family-management" element={<FamilyManagementPage />} />
         </Route>
       </Routes>

@@ -48,6 +48,33 @@ export async function createFamily(familyName) {
   return toFamily(family);
 }
 
+export async function fetchFamily(familyId) {
+  const family = await new Parse.Query(Family).get(familyId);
+  return toFamily(family);
+}
+
+//we can read other users' rows because Parse gives every _User row public read access by default
+export async function fetchFamilyMembers(familyId) {
+  const familyPointer = Family.createWithoutData(familyId);
+  const query = new Parse.Query(Parse.User);
+  query.equalTo("family", familyPointer);
+  query.ascending("username");
+  const results = await query.find();
+
+  return results.map((member) => ({
+    id: member.id,
+    username: member.get("username"),
+    role: member.get("role"),
+  }));
+}
+
+//a user can only save their own _User row, so this only changes the logged in user's role
+export async function changeOwnRole(role) {
+  const user = Parse.User.current();
+  user.set("role", role);
+  await user.save();
+}
+
 export async function joinFamily(inviteCode) {
   const family = await findFamilyByInviteCode(inviteCode);
   if (!family) {

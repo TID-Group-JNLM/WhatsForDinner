@@ -19,7 +19,7 @@ export default function FamilyManagementPage() {
 
   //family and members are loaded at the same time
   useEffect(() => {
-    Promise.all([fetchFamily(familyId), fetchFamilyMembers(familyId)])
+    Promise.all([fetchFamily(familyId), fetchFamilyMembers()])
       .then(([familyResult, membersResult]) => {
         setFamily(familyResult);
         setMembers(membersResult);
@@ -43,7 +43,7 @@ export default function FamilyManagementPage() {
 
   const me = members.find((member) => member.id === myId);
   const otherMembers = members.filter((member) => member.id !== myId);
-  //happens if Back4App does not let us find users (Find must be allowed on _User for Authenticated)
+  //should not happen, since getFamilyMembers always includes the logged in user
   if (!me) return <p>Could not load the family members.</p>;
 
   return (

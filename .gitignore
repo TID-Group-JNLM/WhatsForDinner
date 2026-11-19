@@ -23,3 +23,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# b4a link file (contains your email)
+.parse.project

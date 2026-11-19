@@ -53,19 +53,10 @@ export async function fetchFamily(familyId) {
   return toFamily(family);
 }
 
-//we can read other users' rows because Parse gives every _User row public read access by default
-export async function fetchFamilyMembers(familyId) {
-  const familyPointer = Family.createWithoutData(familyId);
-  const query = new Parse.Query(Parse.User);
-  query.equalTo("family", familyPointer);
-  query.ascending("username");
-  const results = await query.find();
-
-  return results.map((member) => ({
-    id: member.id,
-    username: member.get("username"),
-    role: member.get("role"),
-  }));
+//_User rows are private, so we cannot query other users from the browser.
+//The Cloud Code function getFamilyMembers (back4app/cloud/main.js) finds the logged in user's family members on the server
+export function fetchFamilyMembers() {
+  return Parse.Cloud.run("getFamilyMembers");
 }
 
 //a user can only save their own _User row, so this only changes the logged in user's role

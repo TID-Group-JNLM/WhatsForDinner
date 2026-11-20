@@ -21,10 +21,10 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: '"Nunito", sans-serif',
-    h1: { fontWeight: 700 },
-    h2: { fontWeight: 700 },
-    h3: { fontWeight: 700 },
-    button: { textTransform: "none" },
+    h5: { fontWeight: 700 },
+    h6: { fontWeight: 700 },
+    subtitle1: { fontWeight: 600 },
+    button: { fontWeight: 700, textTransform: "none" },
   },
   shape: {
     borderRadius: 12,

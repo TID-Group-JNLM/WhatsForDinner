@@ -1,5 +1,6 @@
 import ChooseDishForm from "./ChooseDishForm.jsx";
 import DishCard from "./DishCard.jsx";
+import { Card, Typography, Stack, Box, Button } from "@mui/material";
 
 export default function MealPlanDay({
   day,
@@ -14,8 +15,11 @@ export default function MealPlanDay({
   isParent,
 }) {
   return (
-    <section>
-      <h2>{day.toLocaleDateString("en-GB", { weekday: "long" })}</h2>
+    <Card variant="outlined" component="section" sx={{ p: 2 }}>
+      <Typography variant="h6" component="h2">
+        {day.toLocaleDateString("en-GB", { weekday: "long" })}
+      </Typography>
+
       {/* Parents add straight to the plan; children can only suggest */}
       <ChooseDishForm
         dishes={dishes}
@@ -25,41 +29,60 @@ export default function MealPlanDay({
         buttonLabel={isParent ? "Add" : "Suggest"}
       />
       {entries.length === 0 ? (
-        <p>Nothing planned</p>
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          Nothing planned
+        </Typography>
       ) : (
-        <ul>
+        <Stack
+          component="ul"
+          direction="row"
+          spacing={1}
+          useFlexGap
+          sx={{ flexWrap: "wrap", listStyle: "none", p: 0, m: 0 }}
+        >
           {entries.map((entry) => (
-            <li key={entry.id}>
-              <DishCard dish={entry.dish} />
-              {isParent && (
-                <button onClick={() => onRemove(entry.id)}>Remove</button>
-              )}
-            </li>
+            <Box component="li" key={entry.id} sx={{ width: 122 }}>
+              <DishCard
+                dish={entry.dish}
+                onRemove={isParent ? () => onRemove(entry.id) : undefined}
+              />
+            </Box>
           ))}
-        </ul>
+        </Stack>
       )}
       {suggestions.length > 0 && (
-        <>
-          <h3>Suggested</h3>
-          <ul>
-            {suggestions.map((suggestion) => (
-              <li key={suggestion.id}>
-                <DishCard dish={suggestion.dish} />
-                {isParent && (
-                  <>
-                    <button onClick={() => onAcceptSuggestion(suggestion)}>
-                      Add to plan
-                    </button>
-                    <button onClick={() => onDismiss(suggestion.id)}>
-                      Dismiss
-                    </button>
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        </>
+        <Stack
+          component="ul"
+          direction="row"
+          spacing={1}
+          useFlexGap
+          sx={{ flexWrap: "wrap", listStyle: "none", p: 0, m: 0 }}
+        >
+          {suggestions.map((suggestion) => (
+            <Box component="li" key={suggestion.id} sx={{ width: 122 }}>
+              <DishCard dish={suggestion.dish} isSuggestion={true} />
+              {isParent && (
+                <Stack spacing={0.5} sx={{ mt: 0.5 }}>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    onClick={() => onAcceptSuggestion(suggestion)}
+                  >
+                    Add to plan
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => onDismiss(suggestion.id)}
+                  >
+                    Dismiss
+                  </Button>
+                </Stack>
+              )}
+            </Box>
+          ))}
+        </Stack>
       )}
-    </section>
+    </Card>
   );
 }

@@ -13,6 +13,7 @@ import {
   removeSuggestion,
   suggestDish,
 } from "../services/suggestionService.js";
+import { Typography, Stack } from "@mui/material";
 
 function getMonday(date) {
   const daysBack = (date.getDay() + 6) % 7;
@@ -137,8 +138,10 @@ export default function MealPlanPage() {
   const days = getWeekDays(weekStart);
 
   return (
-    <>
-      <h1>Meal plan</h1>
+    <Stack spacing={2}>
+      <Typography variant="h5" component="h1">
+        Meal plan
+      </Typography>
       <WeekNavigation
         weekStart={days[0]}
         weekEnd={days[6]}
@@ -169,6 +172,6 @@ export default function MealPlanPage() {
           />
         );
       })}
-    </>
+    </Stack>
   );
 }

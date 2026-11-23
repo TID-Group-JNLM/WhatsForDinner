@@ -2,6 +2,7 @@ import { useParams } from "react-router";
 import { fetchDish, fetchIngredientsForDish } from "../services/dishService";
 import { useEffect } from "react";
 import { useState } from "react";
+import { Stack, Typography, Box, List, ListItem } from "@mui/material";
 
 export default function DishDetailPage() {
   const { dishId } = useParams();
@@ -27,19 +28,58 @@ export default function DishDetailPage() {
   if (status === "failed") return <p>Could not load the dish.</p>;
 
   return (
-    <>
-      <h1>{dish.name}</h1>
-      {dish.imageUrl && <img src={dish.imageUrl} alt={dish.name} />}
-      <h2>Ingredients</h2>
-      <ul>
-        {ingredients.map((ingredient) => (
-          <li key={ingredient.id}>
-            {ingredient.name} {ingredient.amount} {ingredient.unit}
-          </li>
-        ))}
-      </ul>
-      <h2>Recipe</h2>
-      {dish.recipe && <p>{dish.recipe}</p>}
-    </>
+    <Stack spacing={3}>
+      <Typography variant="h5" component="h1">
+        {dish.name}
+      </Typography>
+
+      {dish.imageUrl && (
+        <Box
+          component="img"
+          src={dish.imageUrl}
+          alt=""
+          sx={{
+            width: "100%",
+            aspectRatio: "4 / 3",
+            objectFit: "cover",
+            borderRadius: 1,
+          }}
+        />
+      )}
+      <Stack component="section" spacing={1}>
+        <Typography variant="h6" component="h2">
+          Ingredients
+        </Typography>
+        <List
+          disablePadding
+          divider
+          disableGutters
+          sx={{ justifyContent: "space-between" }}
+        >
+          {ingredients.map((ingredient) => (
+            <ListItem
+              key={ingredient.id}
+              divider
+              disableGutters
+              sx={{ justifyContent: "space-between" }}
+            >
+              <Typography>{ingredient.name}</Typography>
+              <Typography sx={{ color: "text.secondary" }}>
+                {ingredient.amount} {ingredient.unit}
+              </Typography>
+            </ListItem>
+          ))}
+        </List>
+      </Stack>
+
+      <Stack component="section" spacing={1}>
+        <Typography variant="h6" component="h2">
+          Recipe
+        </Typography>
+        {dish.recipe && (
+          <Typography sx={{ whiteSpace: "pre-line" }}>{dish.recipe}</Typography>
+        )}
+      </Stack>
+    </Stack>
   );
 }

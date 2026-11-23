@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { joinFamily } from "../../services/familyService.js";
 import TextField from "../TextField.jsx";
+import { Stack, Typography, Button, Alert } from "@mui/material";
 
 export default function JoinFamilyForm({ onJoin }) {
   const [inviteCode, setInviteCode] = useState("");
@@ -18,8 +19,10 @@ export default function JoinFamilyForm({ onJoin }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Join a family</h2>
+    <Stack component="form" onSubmit={handleSubmit} spacing={2}>
+      <Typography variant="h6" component="h2">
+        Join a family
+      </Typography>
       <TextField
         id="invite-code"
         label="Invite code"
@@ -27,8 +30,10 @@ export default function JoinFamilyForm({ onJoin }) {
         value={inviteCode}
         onChange={setInviteCode}
       />
-      <button type="submit">Join family</button>
-      {error && <p>{error}</p>}
-    </form>
+      {error && <Alert severity="error">{error}</Alert>}
+      <Button type="submit" variant="contained">
+        Join family
+      </Button>
+    </Stack>
   );
 }

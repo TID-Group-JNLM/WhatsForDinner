@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFamily } from "../../services/familyService.js";
 import TextField from "../TextField.jsx";
+import { Stack, Typography, Button } from "@mui/material";
 
 export default function CreateFamilyForm({ onCreate }) {
   const [familyName, setFamilyName] = useState("");
@@ -18,8 +19,10 @@ export default function CreateFamilyForm({ onCreate }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Create a family</h2>
+    <Stack component="form" onSubmit={handleSubmit} spacing={2}>
+      <Typography variant="h6" component="h2">
+        Create a family
+      </Typography>
       <TextField
         id="family-name"
         label="Family name"
@@ -27,8 +30,10 @@ export default function CreateFamilyForm({ onCreate }) {
         value={familyName}
         onChange={setFamilyName}
       />
-      <button type="submit">Create family</button>
-      {error && <p>{error}</p>}
-    </form>
+      {error && <Alert severity="error">{error}</Alert>}
+      <Button type="submit" variant="contained">
+        Create family
+      </Button>
+    </Stack>
   );
 }

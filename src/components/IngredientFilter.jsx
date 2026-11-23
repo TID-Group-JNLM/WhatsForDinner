@@ -17,6 +17,7 @@ export default function IngredientFilter({
   const selectedIngredients = ingredients.filter((ingredient) =>
     selectedIds.includes(ingredient.id),
   );
+  const hasNoMatches = suggestions.length === 0 && search.length > 0;
 
   function handleSelect(ingredientId) {
     onToggle(ingredientId);
@@ -41,6 +42,7 @@ export default function IngredientFilter({
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
+      {hasNoMatches && <p>No matching ingredients</p>}
       <ul>
         {suggestions.map((ingredient) => (
           <li key={ingredient.id}>

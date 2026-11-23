@@ -75,3 +75,17 @@ export async function addDishToMealPlan(dishId, date) {
 export async function removeDishFromMealPlan(entryId) {
   await MealPlanEntry.createWithoutData(entryId).destroy();
 }
+
+// function to load the Meal Plan for a time period in Shopping List
+export async function loadMealsFromToDate(fromDate, toDateExcluded, familyId) {
+
+  const results = await new Parse.Query(MealPlanEntry)
+    .equalTo("family", Family.createWithoutData(familyId))
+    .greaterThanOrEqualTo("date", fromDate)
+    .lessThan("date", toDateExcluded)
+    .include("dish")
+    .ascending("date")
+    .find();
+
+  return results.map(toMealPlanEntry);
+}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Stack, TextField, Chip } from "@mui/material";
 
 export default function IngredientFilter({
   ingredients,
@@ -24,32 +25,37 @@ export default function IngredientFilter({
   }
 
   return (
-    <div>
-      <ul>
-        {selectedIngredients.map((ingredient) => (
-          <li key={ingredient.id}>
-            <button type="button" onClick={() => onToggle(ingredient.id)}>
-              X {ingredient.name}
-            </button>
-          </li>
-        ))}
-      </ul>
-      <label htmlFor="ingredient_search">Ingredient filter</label>
-      <input
-        type="text"
+    <Stack spacing={1}>
+      <TextField
         id="ingredient_search"
+        label="Filter by ingredient"
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
-      <ul>
-        {suggestions.map((ingredient) => (
-          <li key={ingredient.id}>
-            <button type="button" onClick={() => handleSelect(ingredient.id)}>
-              {ingredient.name}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+      {selectedIngredients.length > 0 && (
+        <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+          {selectedIngredients.map((ingredient) => (
+            <Chip
+              key={ingredient.id}
+              label={ingredient.name}
+              color="primary"
+              onDelete={() => onToggle(ingredient.id)}
+            />
+          ))}
+        </Stack>
+      )}
+      {suggestions.length > 0 && (
+        <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+          {suggestions.map((ingredient) => (
+            <Chip
+              key={ingredient.id}
+              label={ingredient.name}
+              variant="outlined"
+              onClick={() => handleSelect(ingredient.id)}
+            />
+          ))}
+        </Stack>
+      )}
+    </Stack>
   );
 }

@@ -1,9 +1,7 @@
 import Stack from "@mui/material/Stack";
 import { Typography, IconButton } from "@mui/material";
-import {
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-} from "@mui/icons-material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 function formatDay(date) {
   return date.toLocaleDateString("en-GB", {

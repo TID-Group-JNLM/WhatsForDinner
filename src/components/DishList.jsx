@@ -1,8 +1,13 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import DishCard from "./DishCard";
-import { fetchDishes, fetchIngredients, fetchDishIdsWithAllIngredients} from "../services/dishService";
+import {
+  fetchDishes,
+  fetchIngredients,
+  fetchDishIdsWithAllIngredients,
+} from "../services/dishService";
 import IngredientFilter from "./IngredientFilter";
+import { Box, Stack } from "@mui/material";
 
 export default function DishList({ familyId }) {
   const [dishes, setDishes] = useState([]);
@@ -67,11 +72,23 @@ export default function DishList({ familyId }) {
     content = <p>No dishes contain all of these ingredients.</p>;
   } else {
     content = (
-      <div>
+      <Box
+        component="ul"
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: 2,
+          listStyle: "none",
+          p: 0,
+          m: 0,
+        }}
+      >
         {shownDishes.map((dish) => (
-          <DishCard key={dish.id} dish={dish} />
+          <Stack component="li" key={dish.id}>
+            <DishCard dish={dish} />
+          </Stack>
         ))}
-      </div>
+      </Box>
     );
   }
 

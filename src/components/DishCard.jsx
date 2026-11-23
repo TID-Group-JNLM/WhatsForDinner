@@ -7,7 +7,7 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function DishCard({ dish, onRemove, isSuggestion = false }) {
   return (
@@ -32,7 +32,7 @@ export default function DishCard({ dish, onRemove, isSuggestion = false }) {
         <CardContent>
           <Typography variant="subtitle1">{dish.name}</Typography>
           {isSuggestion && (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
               Suggestion
             </Typography>
           )}

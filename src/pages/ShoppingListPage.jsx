@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { getCurrentUser } from "../services/authService";
-import { loadShoppingList } from "../services/shoppingListService";
-import { setItemChecked } from "../services/shoppingListService";
+import {
+  loadShoppingList,
+  setItemChecked,
+  createShoppingList,
+} from "../services/shoppingListService";
 
 export default function ShoppingListPage() {
   const familyId = getCurrentUser().familyId;
@@ -10,6 +13,8 @@ export default function ShoppingListPage() {
   const [fromDateInput, setFromDateInput] = useState("");
   const [toDateInput, setToDateInput] = useState("");
   const [dateInputError, setDateInputError] = useState("");
+  const [createError, setCreateError] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     loadShoppingList(familyId)
@@ -17,6 +22,7 @@ export default function ShoppingListPage() {
         setShoppingList(result);
         setStatus("ready");
       })
+
       .catch(() => {
         setStatus("failed");
       });
@@ -26,15 +32,26 @@ export default function ShoppingListPage() {
     await setItemChecked(item.id, !item.checked);
   }
 
-  function handleCreateShoppingList(event) {
+  async function handleCreateShoppingList(event) {
     event.preventDefault();
     setDateInputError("");
+    setCreateError("");
     if (fromDateInput > toDateInput) {
       setDateInputError("From Date can not be after To Date");
+
       return;
     }
+    setIsCreating(true);
+    try {
+      await createShoppingList(familyId, fromDateInput, toDateInput);
+      const newList = await loadShoppingList(familyId);
+      setShoppingList(newList);
+      setStatus("ready");
+    } catch (error) {
+      setCreateError("Could not create new Shopping List");
+    }
+    setIsCreating(false);
   }
-
   return (
     <div>
       <h1>Shopping list</h1>
@@ -58,26 +75,43 @@ export default function ShoppingListPage() {
           value={toDateInput}
           onChange={(event) => setToDateInput(event.target.value)}
         />
-        <button type="submit">Create List</button>
+        <button type="submit" disabled={isCreating}>
+          Create List
+        </button>
       </form>
+      {isCreating && <p>Creating Shopping List</p>}
       {dateInputError && <p>{dateInputError}</p>}
+      {createError && <p>{createError}</p>}
 
       {status === "loading" && <p>Loading...</p>}
       {status === "failed" && <p>Could not load. Try refreshing the page.</p>}
 
-      {status === "ready" && shoppingList === null && (
+      {status === "ready" && shoppingList === null && !isCreating && (
         <p>No shopping list created yet</p>
       )}
-      {status === "ready" && shoppingList !== null && (
-        <ul>
-          {shoppingList.items.map((item) => (
-            <li key={item.id}>
-              {item.name}
-              <input type="checkbox" checked={item.checked} onChange={(event) => handleToggle(item)}></input>
-            </li>
-          ))}
-        </ul>
-      )}
+
+      {status === "ready" &&
+        shoppingList !== null &&
+        shoppingList.items.length === 0 &&
+        !isCreating && <p>Nothing to buy in this period</p>}
+
+      {status === "ready" &&
+        shoppingList !== null &&
+        shoppingList.items.length > 0 &&
+        !isCreating && (
+          <ul>
+            {shoppingList.items.map((item) => (
+              <li key={item.id}>
+                {item.name}
+                <input
+                  type="checkbox"
+                  checked={item.checked}
+                  onChange={(event) => handleToggle(item)}
+                ></input>
+              </li>
+            ))}
+          </ul>
+        )}
     </div>
   );
 }

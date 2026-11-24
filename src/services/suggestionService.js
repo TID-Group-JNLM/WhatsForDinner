@@ -10,6 +10,8 @@ function toSuggestion(item) {
   return {
     id: item.id,
     date: item.get("date"),
+    //only the id, because _User rows are private. The page finds the name with getFamilyMembers
+    userId: item.get("user").id,
     dish: {
       id: dish.id,
       name: dish.get("dishName"),

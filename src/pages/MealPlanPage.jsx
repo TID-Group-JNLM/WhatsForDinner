@@ -6,6 +6,7 @@ import {
 } from "../services/mealPlanService.js";
 import { getCurrentUser } from "../services/authService.js";
 import { fetchDishes } from "../services/dishService.js";
+import { fetchFamilyMembers } from "../services/familyService.js";
 import MealPlanDay from "../components/MealPlanDay.jsx";
 import WeekNavigation from "../components/WeekNavigation.jsx";
 import {
@@ -32,6 +33,12 @@ function addDays(date, days) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
 }
 
+function findUsername(members, userId) {
+  const member = members.find((each) => each.id === userId);
+  //not found if the child has left the family after suggesting
+  return member ? member.username : null;
+}
+
 export default function MealPlanPage() {
   //RequireLogin in App.jsx makes sure there is a user with a family here
   const { familyId, role } = getCurrentUser();
@@ -43,6 +50,7 @@ export default function MealPlanPage() {
   const [status, setStatus] = useState("loading");
   const [dishes, setDishes] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
+  const [members, setMembers] = useState([]);
 
   // Suggestions belong to the week like the meal plan, so they load together
   useEffect(() => {
@@ -71,6 +79,18 @@ export default function MealPlanPage() {
       }
     }
     loadDishes();
+  }, [familyId]);
+
+  // Only used for the names on suggestions, so like the dishes it can't hide the meal plan
+  useEffect(() => {
+    async function loadMembers() {
+      try {
+        setMembers(await fetchFamilyMembers());
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    loadMembers();
   }, [familyId]);
 
   async function handleAdd(dishId, day) {
@@ -153,9 +173,15 @@ export default function MealPlanPage() {
         const dayEntries = mealPlan.filter(
           (entry) => entry.date.toDateString() === day.toDateString(),
         );
-        const daySuggestions = suggestions.filter(
-          (suggestion) => suggestion.date.toDateString() === day.toDateString(),
-        );
+        const daySuggestions = suggestions
+          .filter(
+            (suggestion) =>
+              suggestion.date.toDateString() === day.toDateString(),
+          )
+          .map((suggestion) => ({
+            ...suggestion,
+            suggestedBy: findUsername(members, suggestion.userId),
+          }));
         return (
           <MealPlanDay
             key={day.getTime()}

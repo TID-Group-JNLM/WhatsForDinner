@@ -60,7 +60,11 @@ export default function MealPlanDay({
         >
           {suggestions.map((suggestion) => (
             <Box component="li" key={suggestion.id} sx={{ width: 122 }}>
-              <DishCard dish={suggestion.dish} isSuggestion={true} />
+              <DishCard
+                dish={suggestion.dish}
+                isSuggestion={true}
+                suggestedBy={suggestion.suggestedBy}
+              />
               {isParent && (
                 <Stack spacing={0.5} sx={{ mt: 0.5 }}>
                   <Button

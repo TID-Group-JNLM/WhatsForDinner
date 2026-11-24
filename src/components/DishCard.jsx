@@ -9,7 +9,12 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-export default function DishCard({ dish, onRemove, isSuggestion = false }) {
+export default function DishCard({
+  dish,
+  onRemove,
+  isSuggestion = false,
+  suggestedBy,
+}) {
   return (
     <Card
       variant="outlined"
@@ -33,7 +38,7 @@ export default function DishCard({ dish, onRemove, isSuggestion = false }) {
           <Typography variant="subtitle1">{dish.name}</Typography>
           {isSuggestion && (
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Suggestion
+              {suggestedBy ? `Suggested by ${suggestedBy}` : "Suggestion"}
             </Typography>
           )}
         </CardContent>

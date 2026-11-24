@@ -21,6 +21,9 @@ export default function TextField({
       value={value}
       onChange={(event) => onChange(event.target.value)}
       fullWidth
+      // A date field always shows a placeholder (dd/mm/yyyy), so the label must stay
+      // above the field from the start, or the two are drawn on top of each other
+      slotProps={type === "date" ? { inputLabel: { shrink: true } } : undefined}
     />
   );
 }

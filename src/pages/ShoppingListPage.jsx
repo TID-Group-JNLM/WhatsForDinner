@@ -1,111 +1,158 @@
-import { useState, useEffect } from "react";
-import { getCurrentUser } from "../services/authService";
+import { useState, useEffect, useRef } from "react";
+import { getCurrentUser } from "../services/authService.js";
 import {
   loadShoppingList,
-  createShoppingList,
-} from "../services/shoppingListService";
+  setItemChecked,
+  groupByCategory,
+} from "../services/shoppingListService.js";
+import CreateShoppingListForm from "../components/ShoppingList/CreateShoppingListForm.jsx";
+import ShoppingListCategory from "../components/ShoppingList/ShoppingListCategory.jsx";
+import { Stack, Typography, Alert } from "@mui/material";
 
-function roundAmount(amount) {
-  return Math.round(amount * 10) / 10;
+// The list is shared by the whole family. We fetch it again this often,
+// so ticks made by the others show up without reloading the page
+const RELOAD_EVERY_MS = 15000;
+
+function formatDate(date) {
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+// Returns a copy of the list where one item has a new checked value
+function withItemChecked(list, itemId, checked) {
+  return {
+    ...list,
+    items: list.items.map((item) =>
+      item.id === itemId ? { ...item, checked } : item,
+    ),
+  };
 }
 
 export default function ShoppingListPage() {
-  const familyId = getCurrentUser().familyId;
+  //RequireLogin in App.jsx makes sure there is a user with a family here
+  const { familyId } = getCurrentUser();
   const [shoppingList, setShoppingList] = useState(null);
   const [status, setStatus] = useState("loading");
-  const [fromDateInput, setFromDateInput] = useState("");
-  const [toDateInput, setToDateInput] = useState("");
-  const [dateInputError, setDateInputError] = useState("");
-  const [createError, setCreateError] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
+  const [tickError, setTickError] = useState("");
+
+  // useRef keeps a value between renders without drawing the page again when it changes.
+  // Both are used so a reload can't undo a tick that is newer than the data it fetched
+  const savesInProgress = useRef(0); // ticks that are not saved in Back4App yet
+  const tickCount = useRef(0); // goes up by one on every tick on this phone
+
+  async function reloadList() {
+    const tickCountAtStart = tickCount.current;
+    const list = await loadShoppingList(familyId);
+    // If someone ticked while we were loading, or a tick is still saving,
+    // the fetched list may be older than the screen, so we throw it away
+    if (
+      tickCount.current === tickCountAtStart &&
+      savesInProgress.current === 0
+    ) {
+      setShoppingList(list);
+    }
+  }
 
   useEffect(() => {
-    loadShoppingList(familyId)
-      .then((result) => {
-        setShoppingList(result);
+    async function load() {
+      try {
+        setShoppingList(await loadShoppingList(familyId));
         setStatus("ready");
-      })
-
-      .catch(() => {
+      } catch (error) {
+        console.error(error);
         setStatus("failed");
-      });
+      }
+    }
+    load();
+
+    // Only reload while the page is visible, and right away when the user comes back to the app.
+    // A failed reload is ignored: the list on screen is kept and the next reload tries again
+    async function reloadIfVisible() {
+      if (document.visibilityState !== "visible") return;
+      try {
+        await reloadList();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    const intervalId = setInterval(reloadIfVisible, RELOAD_EVERY_MS);
+    document.addEventListener("visibilitychange", reloadIfVisible);
+
+    // Runs when the user leaves the page, so we stop reloading in the background
+    return () => {
+      clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", reloadIfVisible);
+    };
+    // reloadList only depends on familyId, so it is left out here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [familyId]);
 
-  async function handleCreateShoppingList(event) {
-    event.preventDefault();
-    setDateInputError("");
-    setCreateError("");
-    if (fromDateInput > toDateInput) {
-      setDateInputError("From Date can not be after To Date");
-
-      return;
-    }
-    setIsCreating(true);
-    try {
-      await createShoppingList(familyId, fromDateInput, toDateInput);
-      const newList = await loadShoppingList(familyId);
-      setShoppingList(newList);
-      setStatus("ready");
-    } catch (error) {
-      setCreateError("Could not create new Shopping List");
-    }
-    setIsCreating(false);
+  async function handleCreated() {
+    setTickError("");
+    setShoppingList(await loadShoppingList(familyId));
   }
+
+  async function handleToggle(itemId, checked) {
+    setTickError("");
+    tickCount.current += 1;
+    savesInProgress.current += 1;
+    // Show the tick right away, then save it.
+    // setShoppingList gets a function, so it always changes the newest list,
+    // even if a reload replaced it while we were waiting
+    setShoppingList((list) => withItemChecked(list, itemId, checked));
+    try {
+      await setItemChecked(itemId, checked);
+    } catch (error) {
+      console.error(error);
+      // Undo the tick on screen, because it was not saved
+      setShoppingList((list) => withItemChecked(list, itemId, !checked));
+      setTickError("Could not save the tick. Try again");
+    }
+    savesInProgress.current -= 1;
+  }
+
+  if (status === "loading") return <p>Loading the shopping list...</p>;
+  if (status === "failed")
+    return <p>Could not load. Try refreshing the page.</p>;
+
+  const categories = shoppingList ? groupByCategory(shoppingList.items) : [];
+
   return (
-    <div>
-      <h1>Shopping list</h1>
-      <form onSubmit={handleCreateShoppingList}>
-        <label htmlFor="from-date-input">From Date</label>
-        <input
-          required
-          id="from-date-input"
-          name="fromDate"
-          type="date"
-          value={fromDateInput}
-          onChange={(event) => setFromDateInput(event.target.value)}
-        />
+    <Stack spacing={3}>
+      <Typography variant="h5" component="h1">
+        Shopping list
+      </Typography>
 
-        <label htmlFor="to-date-input">To Date</label>
-        <input
-          required
-          id="to-date-input"
-          name="toDate"
-          type="date"
-          value={toDateInput}
-          onChange={(event) => setToDateInput(event.target.value)}
-        />
-        <button type="submit" disabled={isCreating}>
-          Create List
-        </button>
-      </form>
-      {isCreating && <p>Creating Shopping List</p>}
-      {dateInputError && <p>{dateInputError}</p>}
-      {createError && <p>{createError}</p>}
+      <CreateShoppingListForm familyId={familyId} onCreate={handleCreated} />
 
-      {status === "loading" && <p>Loading...</p>}
-      {status === "failed" && <p>Could not load. Try refreshing the page.</p>}
-
-      {status === "ready" && shoppingList === null && !isCreating && (
-        <p>No shopping list created yet</p>
+      {shoppingList === null && (
+        <Typography sx={{ color: "text.secondary" }}>
+          No shopping list created yet
+        </Typography>
       )}
 
-      {status === "ready" &&
-        shoppingList !== null &&
-        shoppingList.items.length === 0 &&
-        !isCreating && <p>Nothing to buy in this period</p>}
+      {shoppingList !== null && (
+        <Typography sx={{ color: "text.secondary" }}>
+          For {formatDate(shoppingList.fromDate)} –{" "}
+          {formatDate(shoppingList.toDate)}
+        </Typography>
+      )}
 
-      {status === "ready" &&
-        shoppingList !== null &&
-        shoppingList.items.length > 0 &&
-        !isCreating && (
-          <ul>
-            {shoppingList.items.map((item) => (
-              <li key={item.id}>
-                {item.name} {roundAmount(item.amount)} {item.unit}
-              </li>
-            ))}
-          </ul>
-        )}
-    </div>
+      {shoppingList !== null && categories.length === 0 && (
+        <Typography sx={{ color: "text.secondary" }}>
+          Nothing to buy in this period
+        </Typography>
+      )}
+
+      {tickError && <Alert severity="error">{tickError}</Alert>}
+
+      {categories.map((category) => (
+        <ShoppingListCategory
+          key={category.key}
+          label={category.label}
+          items={category.items}
+          onToggle={handleToggle}
+        />
+      ))}
+    </Stack>
   );
 }

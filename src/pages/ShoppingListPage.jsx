@@ -11,6 +11,7 @@ import { Stack, Typography, Alert } from "@mui/material";
 
 // The list is shared by the whole family. We fetch it again this often,
 // so ticks made by the others show up without reloading the page
+//we should fix this later by allowing live query in back4app
 const RELOAD_EVERY_MS = 15000;
 
 function formatDate(date) {
@@ -35,7 +36,7 @@ export default function ShoppingListPage() {
   const [tickError, setTickError] = useState("");
 
   // useRef keeps a value between renders without drawing the page again when it changes.
-  // Both are used so a reload can't undo a tick that is newer than the data it fetched
+  // Both are used so a reload cant undo a tick that is newer than the data it fetched
   const savesInProgress = useRef(0); // ticks that are not saved in Back4App yet
   const tickCount = useRef(0); // goes up by one on every tick on this phone
 

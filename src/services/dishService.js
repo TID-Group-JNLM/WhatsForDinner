@@ -20,6 +20,7 @@ function toDishIngredient(dishIngredient) {
   return {
     id: dishIngredient.id,
     name: ingredient.get("ingredientName"),
+    ingredientId: ingredient.id,
     unit: ingredient.get("ingredientUnit"),
     amount: dishIngredient.get("amount"),
   };

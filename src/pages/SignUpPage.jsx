@@ -6,7 +6,7 @@ import { Stack, Typography, Button, Alert, Link } from "@mui/material";
 
 //each usestate gives us the current value an a function to change it. when called, react draws the page again with the new value
 export default function SignUpPage() {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,7 +17,7 @@ export default function SignUpPage() {
     event.preventDefault(); //avoiding the defaul reload of a form
     setError(""); //removes old errros before trying again
     try {
-      const newUser = await signUp(username, email, password);
+      const newUser = await signUp(name, email, password);
       setUser(newUser); //create new user and render page again
     } catch (signUpError) {
       setError(signUpError.message); //store the error message
@@ -32,11 +32,11 @@ export default function SignUpPage() {
         Sign up
       </Typography>
       <TextField
-        id="username"
-        label="Username"
+        id="name"
+        label="Name"
         required
-        value={username}
-        onChange={setUsername}
+        value={name}
+        onChange={setName}
       />
       <TextField
         id="email"

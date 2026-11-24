@@ -10,7 +10,7 @@ export default function FamilyMemberList({ members }) {
       <ul>
         {members.map((member) => (
           <li key={member.id}>
-            {member.username}: {member.role}
+            {member.name}: {member.role}
           </li>
         ))}
       </ul>

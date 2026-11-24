@@ -5,7 +5,7 @@ import TextField from "../components/TextField.jsx";
 import { Stack, Typography, Button, Alert, Link } from "@mui/material";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
@@ -14,7 +14,7 @@ export default function LoginPage() {
     event.preventDefault();
     setError("");
     try {
-      const loggedInUser = await logIn(username, password);
+      const loggedInUser = await logIn(email, password);
       setUser(loggedInUser);
     } catch (logInError) {
       setError(logInError.message);
@@ -30,11 +30,12 @@ export default function LoginPage() {
         Log in
       </Typography>
       <TextField
-        id="username"
-        label="Username"
+        id="email"
+        label="Email"
+        type="email"
         required
-        value={username}
-        onChange={setUsername}
+        value={email}
+        onChange={setEmail}
       />
       <TextField
         id="password"

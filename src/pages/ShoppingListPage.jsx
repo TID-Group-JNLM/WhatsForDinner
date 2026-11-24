@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import { getCurrentUser } from "../services/authService";
 import {
   loadShoppingList,
-  setItemChecked,
   createShoppingList,
 } from "../services/shoppingListService";
+
+function roundAmount(amount) {
+  return Math.round(amount * 10) / 10;
+}
 
 export default function ShoppingListPage() {
   const familyId = getCurrentUser().familyId;
@@ -27,10 +30,6 @@ export default function ShoppingListPage() {
         setStatus("failed");
       });
   }, [familyId]);
-
-  async function handleToggle(item) {
-    await setItemChecked(item.id, !item.checked);
-  }
 
   async function handleCreateShoppingList(event) {
     event.preventDefault();
@@ -102,12 +101,7 @@ export default function ShoppingListPage() {
           <ul>
             {shoppingList.items.map((item) => (
               <li key={item.id}>
-                {item.name}
-                <input
-                  type="checkbox"
-                  checked={item.checked}
-                  onChange={(event) => handleToggle(item)}
-                ></input>
+                {item.name} {roundAmount(item.amount)} {item.unit}
               </li>
             ))}
           </ul>

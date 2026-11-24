@@ -9,18 +9,21 @@ Parse.Cloud.define(
     //the family is read on the server, so a user cannot ask for another family's members
     const family = request.user.get("family");
     if (!family) {
-      throw new Parse.Error(Parse.Error.OBJECT_NOT_FOUND, "You are not in a family");
+      throw new Parse.Error(
+        Parse.Error.OBJECT_NOT_FOUND,
+        "You are not in a family",
+      );
     }
 
     const query = new Parse.Query(Parse.User);
     query.equalTo("family", family);
-    query.ascending("username");
+    query.ascending("name");
     const members = await query.find({ useMasterKey: true });
 
-    //only send what the page needs, not email etc.
+    //only send what the page needs. Not the username, because it is the email
     return members.map((member) => ({
       id: member.id,
-      username: member.get("username"),
+      name: member.get("name"),
       role: member.get("role"),
     }));
   },

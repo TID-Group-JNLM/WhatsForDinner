@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import NavBar from "./NavBar.jsx";
 
 // Shared layout for the pages that need a family: the page itself plus the nav bar.
@@ -14,7 +14,9 @@ export default function AppLayout() {
           pt: { xs: 0, md: "56px" },
         }}
       >
-        <Outlet />
+        <Container maxWidth="sm" sx={{ py: 2 }}>
+          <Outlet />
+        </Container>
       </Box>
       <NavBar />
     </>

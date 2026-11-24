@@ -19,7 +19,7 @@ export default function MyRole({ me, onRoleChange }) {
 
   return (
     <section>
-      <p>You are logged in as {me.username}</p>
+      <p>You are logged in as {me.name}</p>
       <label htmlFor="my-role">Your role</label>
       <select id="my-role" value={me.role} onChange={handleChange}>
         <option value="parent">parent</option>

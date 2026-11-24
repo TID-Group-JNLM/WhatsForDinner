@@ -1,3 +1,8 @@
+import Stack from "@mui/material/Stack";
+import { Typography, IconButton } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
 function formatDay(date) {
   return date.toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -13,12 +18,31 @@ export default function WeekNavigation({
   onNext,
 }) {
   return (
-    <nav>
-      <button onClick={onPrevious}>Previous week</button>
-      <p>
-        {formatDay(weekStart)} - {formatDay(weekEnd)}
-      </p>
-      <button onClick={onNext}>Next week</button>
-    </nav>
+    <Stack
+      component="nav"
+      aria-label="Week"
+      direction="row"
+      sx={{
+        alignItems: "center",
+        justifyContent: "space-between",
+        bgcolor: "primary.light",
+        borderRadius: 1,
+        px: 1,
+      }}
+    >
+      <IconButton
+        aria-label="Previous week"
+        onClick={onPrevious}
+        color="primary"
+      >
+        <ChevronLeftIcon />
+      </IconButton>
+      <Typography sx={{ color: "primary.dark", fontWeight: 700 }}>
+        {formatDay(weekStart)} – {formatDay(weekEnd)}
+      </Typography>
+      <IconButton aria-label="Next week" onClick={onNext} color="primary">
+        <ChevronRightIcon />
+      </IconButton>
+    </Stack>
   );
 }

@@ -33,10 +33,10 @@ function addDays(date, days) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
 }
 
-function findUsername(members, userId) {
+function findName(members, userId) {
   const member = members.find((each) => each.id === userId);
   //not found if the child has left the family after suggesting
-  return member ? member.username : null;
+  return member ? member.name : null;
 }
 
 export default function MealPlanPage() {
@@ -180,7 +180,7 @@ export default function MealPlanPage() {
           )
           .map((suggestion) => ({
             ...suggestion,
-            suggestedBy: findUsername(members, suggestion.userId),
+            suggestedBy: findName(members, suggestion.userId),
           }));
         return (
           <MealPlanDay

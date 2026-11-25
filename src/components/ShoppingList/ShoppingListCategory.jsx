@@ -20,7 +20,7 @@ export default function ShoppingListCategory({ label, items, onToggle }) {
       <List disablePadding>
         {items.map((item) => (
           <ListItem
-            component="label" {/* component="label": a click anywhere in the row toggles the checkbox */}
+            component="label"
             key={item.id}
             divider
             disableGutters

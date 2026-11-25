@@ -102,9 +102,11 @@ export async function createShoppingList(familyId, fromDate, toDate) {
   const membersNr = members.length;
   const factor = membersNr / RECIPE_SERVINGS; // What factor to multiply the recipe with to get right amount for the family
 
+  const ingredientLists = await Promise.all( // Running fetchIngredientsForDish in parallell for speed.
+    dishEntries.map((entry) => fetchIngredientsForDish(entry.dish.id)),
+  );
   const totals = {};
-  for (const entry of dishEntries) {
-    const dishIngredients = await fetchIngredientsForDish(entry.dish.id);
+  for (const dishIngredients of ingredientLists) {
     for (const ingredientRow of dishIngredients) {
       if (totals[ingredientRow.ingredientId] === undefined) {
         totals[ingredientRow.ingredientId] = 0;

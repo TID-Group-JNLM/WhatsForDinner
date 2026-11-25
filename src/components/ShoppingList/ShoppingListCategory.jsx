@@ -4,7 +4,6 @@ import {
   List,
   ListItem,
   Checkbox,
-  FormControlLabel,
 } from "@mui/material";
 
 function roundAmount(amount) {
@@ -15,36 +14,34 @@ function roundAmount(amount) {
 export default function ShoppingListCategory({ label, items, onToggle }) {
   return (
     <Stack component="section" spacing={1}>
-      <Typography variant="h6" component="h2">
+      <Typography variant="h6" component="h2"> 
         {label}
       </Typography>
       <List disablePadding>
         {items.map((item) => (
           <ListItem
+            component="label" {/* component="label": a click anywhere in the row toggles the checkbox */}
             key={item.id}
             divider
             disableGutters
             sx={{ justifyContent: "space-between" }}
           >
-            {/* FormControlLabel makes the name clickable too, not just the small box */}
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={item.checked}
-                  onChange={(event) => onToggle(item.id, event.target.checked)}
-                />
-              }
-              label={
-                <Typography
-                  sx={{
-                    textDecoration: item.checked ? "line-through" : "none",
-                    color: item.checked ? "text.secondary" : "text.primary",
-                  }}
-                >
-                  {item.name}
-                </Typography>
-              }
-            />
+            <Stack direction="row" sx={{ alignItems: "center" }}>
+              <Checkbox
+                checked={item.checked}
+                onChange={(event) => onToggle(item.id, event.target.checked)}
+              />
+
+              <Typography
+                sx={{
+                  textDecoration: item.checked ? "line-through" : "none",
+                  color: item.checked ? "text.secondary" : "text.primary",
+                }}
+              >
+                {item.name}
+              </Typography>
+            </Stack>
+
             <Typography sx={{ color: "text.secondary" }}>
               {roundAmount(item.amount)} {item.unit}
             </Typography>

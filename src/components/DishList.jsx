@@ -20,8 +20,12 @@ export default function DishList({ familyId }) {
   useEffect(() => {
     async function load() {
       try {
-        setDishes(await fetchDishes(familyId));
-        setIngredients(await fetchIngredients());
+        const [dishesToBeSet, ingredientsToBeSet] = await Promise.all([
+          fetchDishes(familyId),
+          fetchIngredients(),
+        ]);
+        setDishes(dishesToBeSet);
+        setIngredients(ingredientsToBeSet);
         setStatus("ready");
       } catch (error) {
         console.error(error);

@@ -72,12 +72,16 @@ export async function fetchDishIdsWithIngredient(ingredientId) {
 
 export async function fetchDishIdsWithAllIngredients(ingredientIds) {
   let matching = null;
-  for (const ingredientId of ingredientIds) {
-    const dishIds = await fetchDishIdsWithIngredient(ingredientId);
+  const dishIdLists = await Promise.all(
+    ingredientIds.map((ingredientId) =>
+      fetchDishIdsWithIngredient(ingredientId),
+    ),
+  );
+  for (const dishIds of dishIdLists) {
     matching =
       matching === null
         ? dishIds
-        : matching.filter((each) => dishIds.includes(each));
+        : matching.filter((dishId) => dishIds.includes(dishId));
   }
   return matching;
 }

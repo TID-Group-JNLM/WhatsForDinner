@@ -30,6 +30,7 @@ export default function DishCard({
           <CardMedia
             component="img"
             image={dish.imageUrl}
+            loading="lazy"
             alt=""
             sx={{ aspectRatio: "4 / 3" }} // same shape at every card width, so the cards line up
           />

@@ -32,3 +32,18 @@ We share one Back4App app. The connection is set up in `src/main.jsx`, so you do
 Send me the email you use for Back4App and i will add you so you can see the database in the dashboard.
 
 Important: never put the Master key in the code or in this repo! :-)))
+
+## Cloud Code
+
+Our Cloud Code is in `back4app/cloud/main.js`. To upload it to Back4App:
+
+```
+curl https://raw.githubusercontent.com/back4app/parse-cli/back4app/installer.sh | sudo /bin/bash
+b4a configure accountkey
+cd back4app
+b4a new
+mv back4app/.parse.* . && rmdir back4app
+b4a deploy
+```
+
+You get the account key in Back4App under Account Keys. In `b4a new` choose our existing app, call the directory `back4app` and pick (b)lank. The `mv` line moves the files it makes up next to `cloud/`. You only need `b4a new` the first time. Ask me before you deploy, so we don't overwrite each other.

@@ -1,12 +1,12 @@
 #This file is for github actions
 #What it does:
-#on a push to main, start a clean machine, get the code, install Node and the dependencies, build, and hand the result to Pages.
+#on a push to development, start a clean machine, get the code, install Node and the dependencies, build, and hand the result to Pages.
 name: Deploy to GitHub Pages
 
-#Pipeline runs on every push to main
+#Pipeline runs on every push to development
 on:
   push:
-    branches: [main]
+    branches: [development]
 
 permissions:
   contents: read

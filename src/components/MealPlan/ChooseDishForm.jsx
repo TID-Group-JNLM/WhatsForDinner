@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Stack, MenuItem, TextField, Button } from "@mui/material";
 
+//Dish dropdown + button. Keeps the selected dish in its own state.
 export default function ChooseDishForm({ dishes, onChoose, buttonLabel }) {
   const [selectedDishId, setSelectedDishId] = useState("");
 

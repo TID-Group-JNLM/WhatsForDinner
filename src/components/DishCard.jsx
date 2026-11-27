@@ -9,6 +9,9 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
+//Draws one dish: image, name, link to dish page.
+//If dish is a suggestion card will have dashed orange border and "Suggested by" text.
+//Remove button is only shown for parents
 export default function DishCard({
   dish,
   onRemove,

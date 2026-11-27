@@ -2,7 +2,10 @@ import ChooseDishForm from "./ChooseDishForm.jsx";
 import DishCard from "../DishCard.jsx";
 import { Card, Typography, Stack, Box } from "@mui/material";
 import SuggestionCard from "./SuggestionCard.jsx";
-//One MealPlan per day. Each day draws a form and a row of cards
+import { useState } from "react";
+import ReviewSuggestionDialog from "./ReviewSuggestionDialog.jsx";
+
+//Draws one day of the meal plan: a form and a row of cards
 export default function MealPlanDay({
   day,
   entries,
@@ -15,6 +18,7 @@ export default function MealPlanDay({
   onSuggest,
   isParent,
 }) {
+  const [reviewedSuggestion, setReviewedSuggestion] = useState(null);
   return (
     <Card variant="outlined" component="section" sx={{ p: 2 }}>
       <Typography variant="h6" component="h2">
@@ -54,19 +58,28 @@ export default function MealPlanDay({
             <Box component="li" key={suggestion.id} sx={{ width: 122 }}>
               <SuggestionCard
                 suggestion={suggestion}
-                onAccept={
-                  isParent ? () => onAcceptSuggestion(suggestion) : undefined
-                }
-                onDismiss={
-                  isParent
-                    ? () => onDismissSuggestion(suggestion.id)
-                    : undefined
+                onReview={
+                  isParent ? () => setReviewedSuggestion(suggestion) : undefined
                 }
                 statusLabel={isParent ? "Tap to review" : "Pending"}
               />
             </Box>
           ))}
         </Stack>
+      )}
+      {reviewedSuggestion && (
+        <ReviewSuggestionDialog
+          suggestion={reviewedSuggestion}
+          onClose={() => setReviewedSuggestion(null)}
+          onAccept={() => {
+            onAcceptSuggestion(reviewedSuggestion);
+            setReviewedSuggestion(null);
+          }}
+          onDismiss={() => {
+            onDismissSuggestion(reviewedSuggestion.id);
+            setReviewedSuggestion(null);
+          }}
+        />
       )}
     </Card>
   );

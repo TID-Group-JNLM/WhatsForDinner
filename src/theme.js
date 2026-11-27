@@ -23,7 +23,7 @@ const theme = createTheme({
     fontFamily: '"Nunito", sans-serif',
     h5: { fontWeight: 700 },
     h6: { fontWeight: 700 },
-    subtitle1: { fontWeight: 600 },
+    subtitle1: { fontWeight: 600, lineHeight: 1.25 },
     button: { fontWeight: 700, textTransform: "none" },
   },
   shape: {

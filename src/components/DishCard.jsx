@@ -10,14 +10,18 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-//Draws one dish: image, name, link to dish page.
-//If dish is a suggestion card will have dashed orange border and "Suggested by" text.
+//Draws one dish with picture, name and link to dish page
+/*Knows nothing about where it's used. Extra content is passed in through:
+-imageOverlay: drawn on top of the picture
+-children: drawn under the name
+-sx: extra styling
+-remove button is only shown if onRemove is given*/
 export default function DishCard({
   dish,
   onRemove,
-  isSuggestion = false,
-  suggestedBy,
-  statusLabel,
+  imageOverlay,
+  sx,
+  children,
 }) {
   return (
     <Card
@@ -25,9 +29,7 @@ export default function DishCard({
       sx={{
         position: "relative",
         flexGrow: 1,
-        borderStyle: isSuggestion ? "dashed" : "solid",
-        borderColor: isSuggestion ? "warning.main" : "divider",
-        borderWidth: isSuggestion ? 1.5 : 1,
+        ...sx,
       }}
     >
       <CardActionArea component={Link} to={`/dishes/${dish.id}`}>
@@ -40,43 +42,17 @@ export default function DishCard({
               alt=""
               sx={{
                 aspectRatio: "4 / 3",
-                opacity: isSuggestion ? 0.5 : 1,
               }}
             />
 
-            {isSuggestion && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "text.secondary",
-                    bgcolor: "background.paper",
-                    px: 1,
-                    py: 0.5,
-                    borderRadius: 1,
-                  }}
-                >
-                  {statusLabel}
-                </Typography>
-              </Box>
+            {imageOverlay && (
+              <Box sx={{ position: "absolute", inset: 0 }}>{imageOverlay}</Box>
             )}
           </Box>
         )}
         <CardContent sx={{ p: 1.5 }}>
           <Typography variant="subtitle1">{dish.name}</Typography>
-          {isSuggestion && (
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              {suggestedBy ? `Suggested by ${suggestedBy}` : "Suggestion"}
-            </Typography>
-          )}
+          {children}
         </CardContent>
       </CardActionArea>
       {onRemove && (

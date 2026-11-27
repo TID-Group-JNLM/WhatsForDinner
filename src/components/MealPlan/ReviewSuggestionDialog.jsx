@@ -38,7 +38,7 @@ export default function ReviewSuggestionDialog({
           Dismiss
         </Button>
         <Button variant="contained" onClick={onAccept}>
-          Add to plan
+          Accept
         </Button>
       </DialogActions>
     </Dialog>

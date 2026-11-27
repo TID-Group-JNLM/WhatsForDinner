@@ -62,6 +62,7 @@ export default function MealPlanDay({
                     ? () => onDismissSuggestion(suggestion.id)
                     : undefined
                 }
+                statusLabel={isParent ? "Tap to review" : "Pending"}
               />
             </Box>
           ))}

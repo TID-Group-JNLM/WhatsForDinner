@@ -40,14 +40,15 @@ export default function MealPlanPage() {
   const [members, setMembers] = useState([]);
 
   // Suggestions belong to the week like the meal plan, so they load together
-  
+
   useEffect(() => {
     async function load() {
       setStatus("loading");
       try {
-        const [plan, weekSuggestions] = await Promise.all([ 
-        loadMealPlan(weekStart, familyId), 
-        loadSuggestions(weekStart, familyId),]);
+        const [plan, weekSuggestions] = await Promise.all([
+          loadMealPlan(weekStart, familyId),
+          loadSuggestions(weekStart, familyId),
+        ]);
         setMealPlan(plan);
         setSuggestions(weekSuggestions);
         setStatus("ready");

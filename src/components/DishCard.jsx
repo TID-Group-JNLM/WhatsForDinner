@@ -14,15 +14,43 @@ import CloseIcon from "@mui/icons-material/Close";
 /*Knows nothing about where it's used. Extra content is passed in through:
 -imageOverlay: drawn on top of the picture
 -children: drawn under the name
--sx: extra styling
--remove button is only shown if onRemove is given*/
+-sx: extra styling */
+//The remove button is only shown if onRemove is given
+//Card is a button if onClick is given, otherwise a link to dish page
 export default function DishCard({
   dish,
   onRemove,
+  onClick,
   imageOverlay,
   sx,
   children,
 }) {
+  const content = (
+    <>
+      {dish.imageUrl && (
+        <Box sx={{ position: "relative" }}>
+          <CardMedia
+            component="img"
+            image={dish.imageUrl}
+            loading="lazy"
+            alt=""
+            sx={{
+              aspectRatio: "4 / 3",
+            }}
+          />
+
+          {imageOverlay && (
+            <Box sx={{ position: "absolute", inset: 0 }}>{imageOverlay}</Box>
+          )}
+        </Box>
+      )}
+      <CardContent sx={{ p: 1.5 }}>
+        <Typography variant="subtitle1">{dish.name}</Typography>
+        {children}
+      </CardContent>
+    </>
+  );
+
   return (
     <Card
       variant="outlined"
@@ -32,29 +60,13 @@ export default function DishCard({
         ...sx,
       }}
     >
-      <CardActionArea component={Link} to={`/dishes/${dish.id}`}>
-        {dish.imageUrl && (
-          <Box sx={{ position: "relative" }}>
-            <CardMedia
-              component="img"
-              image={dish.imageUrl}
-              loading="lazy"
-              alt=""
-              sx={{
-                aspectRatio: "4 / 3",
-              }}
-            />
-
-            {imageOverlay && (
-              <Box sx={{ position: "absolute", inset: 0 }}>{imageOverlay}</Box>
-            )}
-          </Box>
-        )}
-        <CardContent sx={{ p: 1.5 }}>
-          <Typography variant="subtitle1">{dish.name}</Typography>
-          {children}
-        </CardContent>
-      </CardActionArea>
+      {onClick ? (
+        <CardActionArea onClick={onClick}>{content}</CardActionArea>
+      ) : (
+        <CardActionArea component={Link} to={`/dishes/${dish.id}`}>
+          {content}
+        </CardActionArea>
+      )}
       {onRemove && (
         <IconButton
           aria-label={`Remove ${dish.name}`}

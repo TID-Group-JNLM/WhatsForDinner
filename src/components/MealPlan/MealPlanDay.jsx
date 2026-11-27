@@ -1,7 +1,8 @@
 import ChooseDishForm from "./ChooseDishForm.jsx";
-import DishCard from "./DishCard.jsx";
-import { Card, Typography, Stack, Box, Button } from "@mui/material";
-
+import DishCard from "../DishCard.jsx";
+import { Card, Typography, Stack, Box } from "@mui/material";
+import SuggestionCard from "./SuggestionCard.jsx";
+//One MealPlan per day. Each day draws a form and a row of cards
 export default function MealPlanDay({
   day,
   entries,
@@ -9,7 +10,7 @@ export default function MealPlanDay({
   onAdd,
   onRemove,
   suggestions,
-  onDismiss,
+  onDismissSuggestion,
   onAcceptSuggestion,
   onSuggest,
   isParent,
@@ -28,7 +29,8 @@ export default function MealPlanDay({
         }
         buttonLabel={isParent ? "Add" : "Suggest"}
       />
-      {entries.length === 0 ? (
+
+      {entries.length === 0 && suggestions.length === 0 ? (
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           Nothing planned
         </Typography>
@@ -48,41 +50,19 @@ export default function MealPlanDay({
               />
             </Box>
           ))}
-        </Stack>
-      )}
-      {suggestions.length > 0 && (
-        <Stack
-          component="ul"
-          direction="row"
-          spacing={1}
-          useFlexGap
-          sx={{ flexWrap: "wrap", listStyle: "none", p: 0, m: 0 }}
-        >
           {suggestions.map((suggestion) => (
             <Box component="li" key={suggestion.id} sx={{ width: 122 }}>
-              <DishCard
-                dish={suggestion.dish}
-                isSuggestion={true}
-                suggestedBy={suggestion.suggestedBy}
+              <SuggestionCard
+                suggestion={suggestion}
+                onAccept={
+                  isParent ? () => onAcceptSuggestion(suggestion) : undefined
+                }
+                onDismiss={
+                  isParent
+                    ? () => onDismissSuggestion(suggestion.id)
+                    : undefined
+                }
               />
-              {isParent && (
-                <Stack spacing={0.5} sx={{ mt: 0.5 }}>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    onClick={() => onAcceptSuggestion(suggestion)}
-                  >
-                    Add to plan
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => onDismiss(suggestion.id)}
-                  >
-                    Dismiss
-                  </Button>
-                </Stack>
-              )}
             </Box>
           ))}
         </Stack>

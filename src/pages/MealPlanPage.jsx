@@ -7,31 +7,16 @@ import {
 import { getCurrentUser } from "../services/authService.js";
 import { fetchDishes } from "../services/dishService.js";
 import { fetchFamilyMembers } from "../services/familyService.js";
-import MealPlanDay from "../components/MealPlanDay.jsx";
-import WeekNavigation from "../components/WeekNavigation.jsx";
+import MealPlanDay from "../components/MealPlan/MealPlanDay.jsx";
+import WeekNavigation from "../components/MealPlan/WeekNavigation.jsx";
 import {
   loadSuggestions,
   removeSuggestion,
   suggestDish,
 } from "../services/suggestionService.js";
+import { isSameDay } from "../utilities/dates.js";
+import { useWeek } from "../hooks/useWeek.js";
 import { Typography, Stack } from "@mui/material";
-
-function getMonday(date) {
-  const daysBack = (date.getDay() + 6) % 7;
-  return addDays(date, -daysBack);
-}
-
-function getWeekDays(weekStart) {
-  const days = [];
-  for (let i = 0; i < 7; i++) {
-    days.push(addDays(weekStart, i));
-  }
-  return days;
-}
-
-function addDays(date, days) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
-}
 
 function findName(members, userId) {
   const member = members.find((each) => each.id === userId);
@@ -45,7 +30,9 @@ export default function MealPlanPage() {
   //Hiding buttons from children is only for usability
   //Who may change the plan must still be enforced on the server
   const isParent = role === "parent";
-  const [weekStart, setWeekStart] = useState(getMonday(new Date()));
+
+  const { weekStart, days, showPreviousWeek, showNextWeek } = useWeek();
+
   const [mealPlan, setMealPlan] = useState([]);
   const [status, setStatus] = useState("loading");
   const [dishes, setDishes] = useState([]);
@@ -120,7 +107,7 @@ export default function MealPlanPage() {
     }
   }
 
-  async function handleAcceptSuggestion(suggestion) {
+  async function handleAccept(suggestion) {
     try {
       // Add first, delete after: if adding fails (e.g. already planned), the suggestion is kept
       const newEntry = await addDishToMealPlan(
@@ -144,18 +131,8 @@ export default function MealPlanPage() {
     }
   }
 
-  function showPreviousWeek() {
-    setWeekStart(addDays(weekStart, -7));
-  }
-
-  function showNextWeek() {
-    setWeekStart(addDays(weekStart, 7));
-  }
-
   if (status === "loading") return <p>Loading your meal plan...</p>;
   if (status === "failed") return <p>Could not reach the server. Try again</p>;
-
-  const days = getWeekDays(weekStart);
 
   return (
     <Stack spacing={2}>
@@ -169,15 +146,11 @@ export default function MealPlanPage() {
         onNext={showNextWeek}
       />
       {days.map((day) => {
-        // Compare calendar days, not exact moments, so the time of day doesn't matter
-        const dayEntries = mealPlan.filter(
-          (entry) => entry.date.toDateString() === day.toDateString(),
+        const dayEntries = mealPlan.filter((entry) =>
+          isSameDay(entry.date, day),
         );
         const daySuggestions = suggestions
-          .filter(
-            (suggestion) =>
-              suggestion.date.toDateString() === day.toDateString(),
-          )
+          .filter((suggestion) => isSameDay(suggestion.date, day))
           .map((suggestion) => ({
             ...suggestion,
             suggestedBy: findName(members, suggestion.userId),
@@ -190,8 +163,8 @@ export default function MealPlanPage() {
             dishes={dishes}
             onAdd={handleAdd}
             onRemove={handleRemove}
-            onDismiss={handleDismiss}
-            onAcceptSuggestion={handleAcceptSuggestion}
+            onDismissSuggestion={handleDismiss}
+            onAcceptSuggestion={handleAccept}
             suggestions={daySuggestions}
             onSuggest={handleSuggest}
             isParent={isParent}

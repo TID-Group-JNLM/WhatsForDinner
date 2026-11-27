@@ -11,6 +11,7 @@ function formatDay(date) {
   });
 }
 
+//Shows the week's date range with previous and next buttons
 export default function WeekNavigation({
   weekStart,
   weekEnd,
